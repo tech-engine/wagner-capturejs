@@ -55,7 +55,8 @@ var glowMaterial = new THREE.MeshBasicMaterial( {
     map: new THREE.TextureLoader().load( 'assets/textures/1324-glow.jpg' )
 } );
 var uvMaterial = new THREE.MeshBasicMaterial();
-
+// just added
+var ssaoPass;
 
 var shaders = [];
 
@@ -216,8 +217,10 @@ function init() {
     composer = new WAGNER.Composer( renderer, {
         useRGBA: true
     } );
-
     stack = new WAGNER.Stack( new WAGNER.ShadersPool() );
+   // just added 
+    ssaoPass = new WAGNER.SSAOPass();
+   
 
     onWindowResize();
 
@@ -267,6 +270,8 @@ function render() {
 
         model.material = depthMaterial;
         composer.render( scene, camera, null, depthTexture );
+// just added
+        ssaoPass.params.texture = depthTexture;
 
         model.material = modelMaterial;
         composer.render( scene, camera );
@@ -287,6 +292,8 @@ function render() {
         // } );
 
         composer.pass( stack );
+        // just added
+        composer.pass( ssaoPass );
         composer.toScreen();
 
     }
@@ -572,4 +579,5 @@ var Editor = ( function () {
 
 $( function () {
     Editor.init();
+    //float depth = sampleDepth( vUv );
 } );
